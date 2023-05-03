@@ -1,0 +1,20 @@
+#Build
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.2-nanoserver-ltsc2022 As build
+WORKDIR /app
+
+COPY *.csproj .
+
+RUN dotnet restore
+
+COPY . .
+
+RUN dotnet publish -c Release -o publish 
+
+#run
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.2-nanoserver-ltsc2022
+WORKDIR /application
+
+COPY --from=build dest /app/publish .
+ENTRYPOINT [ "dotnet", "MyCinemaAPI.dll"]
+
