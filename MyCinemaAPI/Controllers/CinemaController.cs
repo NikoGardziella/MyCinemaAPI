@@ -13,6 +13,8 @@ namespace MyCinemaAPI.Controllers
 		
 
 		private readonly ApiContext _context;
+		private CinemaController _cinemaController { get; set; } = null!;
+
 		public CinemaController(ApiContext context)
 		{
 			_context = context;
@@ -99,6 +101,10 @@ namespace MyCinemaAPI.Controllers
 		[HttpGet]
 		public JsonResult GetShowtimes(int openingHour, int closingHour, int duration)
 		{
+			if(duration < 0 || openingHour < 0 || closingHour < 0)
+				return new JsonResult(NotFound());
+			if(openingHour > 24 || closingHour > 24)
+				return new JsonResult(NotFound());
 			TimeSpan breakBetweenShows = TimeSpan.FromMinutes(15);
 			DateTime closingTime;
 			if (closingHour <= 3)
