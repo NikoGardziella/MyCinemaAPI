@@ -101,26 +101,36 @@ namespace MyCinemaAPI.Controllers
 		[HttpGet]
 		public JsonResult GetShowtimes(int openingHour, int closingHour, int duration)
 		{
+		/*
 			if(duration < 0 || openingHour < 0 || closingHour < 0)
 				return new JsonResult(NotFound());
 			if(openingHour > 24 || closingHour > 24)
-				return new JsonResult(NotFound());
-			TimeSpan breakBetweenShows = TimeSpan.FromMinutes(15);
-			DateTime closingTime;
-			if (closingHour <= 3)
-				closingTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1, closingHour, 0, 0);
-			else
-				closingTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, closingHour, 0, 0);
-
-			DateTime currentTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, openingHour, 0, 0);
-			TimeSpan movieDuration = TimeSpan.FromMinutes(duration);
-
+				return new JsonResult(NotFound()); 
+		*/
 			List<string> showtimes = new List<string>();
-			while (currentTime + movieDuration <= closingTime)
+			try
 			{
-				showtimes.Add(currentTime.ToString("HH:mm"));
-				currentTime += movieDuration + breakBetweenShows;
+				TimeSpan breakBetweenShows = TimeSpan.FromMinutes(15);
+				DateTime closingTime;
+				if (closingHour <= 3)
+					closingTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day + 1, closingHour, 0, 0);
+				else
+					closingTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, closingHour, 0, 0);
+
+				DateTime currentTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, openingHour, 0, 0);
+				TimeSpan movieDuration = TimeSpan.FromMinutes(duration);
+
+				while (currentTime + movieDuration <= closingTime)
+				{
+					showtimes.Add(currentTime.ToString("HH:mm"));
+					currentTime += movieDuration + breakBetweenShows;
 				
+				}
+
+			}
+			catch(Exception e)
+			{
+				Console.WriteLine(e.Message);
 			}
 
 			return new JsonResult (Ok(showtimes));
